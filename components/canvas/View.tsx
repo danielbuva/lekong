@@ -14,9 +14,7 @@ import {
   PerspectiveCamera,
   View as ViewImpl,
 } from "@react-three/drei";
-import tunnel from "tunnel-rat";
-
-const In = tunnel().In;
+import { r3f } from "@/global";
 
 export const Common = ({ color }: { color: string }) => (
   <Suspense fallback={null}>
@@ -31,23 +29,27 @@ export const Common = ({ color }: { color: string }) => (
 interface ViewProps {
   children?: ReactNode;
   orbit?: boolean;
+  className?: string;
   // [key: string]: any;
 }
 
 const View = forwardRef<HTMLDivElement, ViewProps>(
-  ({ children, orbit, ...props }, ref: Ref<HTMLDivElement | null>) => {
+  (
+    { children, orbit, className, ...props },
+    ref: Ref<HTMLDivElement | null>
+  ) => {
     const localRef = useRef<HTMLDivElement>(null);
     useImperativeHandle(ref, () => localRef.current);
 
     return (
       <>
-        <div ref={localRef} {...props} />
-        <In>
+        <div ref={localRef} className={className} {...props} />
+        <r3f.In>
           <ViewImpl track={localRef as MutableRefObject<HTMLElement>}>
             {children}
             {orbit && <OrbitControls />}
           </ViewImpl>
-        </In>
+        </r3f.In>
       </>
     );
   }
